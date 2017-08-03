@@ -42,7 +42,7 @@ let PDFParser = (function() {
         this.PDFJS.on("pdfjs_parseDataReady", _onPDFJSParseDataReady.bind(this));
         this.PDFJS.on("pdfjs_parseDataError", _onPDFJSParserDataError.bind(this));
 
-        this.PDFJS.parsePDFData(buffer || _binBuffer[this.pdfFilePath]);
+        this.PDFJS.parsePDFData(buffer || _binBuffer[this.pdfFilePath], this.options.password);
     };
 
     let _processBinaryCache = function() {
@@ -83,7 +83,7 @@ let PDFParser = (function() {
     };
 
     // constructor
-    function PdfParser(context, options) {
+    function PdfParser(context, needRawText) {
         //call constructor for super class
         stream.Transform.call(this, { objectMode: true, bufferSize: 64 * 1024 });
 
@@ -99,7 +99,7 @@ let PDFParser = (function() {
 
         this.pdfFilePath = null; //current PDF file to load and parse, null means loading/parsing not started
         this.data = null; //if file read success, data is PDF content; if failed, data is "err" object
-        this.PDFJS = new PDFJS(options);
+        this.PDFJS = new PDFJS(needRawText);
         this.processFieldInfoXML = false; //disable additional _fieldInfo.xml parsing and merging
 
         this.chunks = [];
@@ -128,8 +128,11 @@ let PDFParser = (function() {
         nodeUtil.verbosity(verbosity || 0);
     };
 
-    PdfParser.prototype.loadPDF = function(pdfFilePath, verbosity) {
-        this.setVerbosity(verbosity);
+    PdfParser.prototype.loadPDF = function(pdfFilePath, options) {
+
+        this.options = Object.assign({}, options);
+
+        this.setVerbosity(this.options.verbosity);
         nodeUtil.p2jinfo("about to load PDF file " + pdfFilePath);
 
         this.pdfFilePath = pdfFilePath;
