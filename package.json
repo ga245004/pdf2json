@@ -43,12 +43,6 @@
         "async": "^2.0.1"
     },
     "devDependencies": {},
-    // "bundledDependencies": [
-    //   "xmldom",
-    //   "lodash",
-    //   "optimist",
-    //   "async"
-    // ],
     "maintainers": [{
         "name": "Modesty Zhang",
         "email": "modestyz@hotmail.com",
